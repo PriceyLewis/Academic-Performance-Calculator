@@ -1,0 +1,18 @@
+{
+    "java.project.sourcePaths": [
+        ".vscode",
+        "lib",
+        "src",
+        "src\\Database"
+    ],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+        "lib\\commons-lang3-3.8.1.jar",
+        "lib\\commons-logging-1.2.jar",
+        "lib\\hsqldb-2.5.0.jar",
+        "lib\\jackcess-3.0.1.jar",
+        "lib\\jcommon-1.0.23.jar",
+        "lib\\jfreechart-1.0.19.jar",
+        "lib\\ucanaccess-5.0.1.jar"
+    ]
+}
