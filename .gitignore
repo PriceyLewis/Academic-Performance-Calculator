@@ -1,0 +1,22 @@
+# Java build output
+*.class
+build/
+out/
+
+# IDE settings
+.vscode/
+.idea/
+*.iml
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+*.swp
+
+# Microsoft Access temporary lock files
+*.laccdb
+*.ldb
+
+# Local exports / temporary files
+*.tmp
+*.log
