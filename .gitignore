@@ -1,5 +1,6 @@
 # Java build output
 *.class
+bin/
 build/
 out/
 
