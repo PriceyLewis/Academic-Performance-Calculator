@@ -1,120 +1,93 @@
 # Academic Performance Calculator
 
-Academic Performance Calculator is a Java desktop portfolio project designed to demonstrate practical UI development, local data persistence, file import and export, and simple predictive reporting in a single employer-friendly demo.
+A Java Swing desktop application built for my final-year Computer Science dissertation. It combines module management, weighted performance tracking, visualisation, local persistence, CSV import/export, and prediction-style academic guidance in one self-contained portfolio demo.
 
-The application allows a user to manage university modules, review overall academic performance, visualise grade distribution, save records to a local Access database, and generate a lightweight forecasting summary from the current dataset.
+## Why This Project Matters
+
+This project demonstrates more than a single algorithm or UI screen. It shows an end-to-end desktop application with validation, database access, persistence, visual feedback, file handling, and a complete user flow from login through analysis.
 
 ## Highlights
 
-- Java Swing desktop interface with a guided demo login flow
-- Module management with validation and live weighted grade updates
-- Bar chart and pie chart visualisations rendered directly in the application
-- CSV export and import support
-- Microsoft Access database integration through UCanAccess
-- Built-in sample data so the app is ready to demonstrate immediately
-- Forecast summary based on the current module data
+- Java Swing desktop interface with a guided demo login
+- Module management with validation and live weighted-grade updates
+- Bar and pie chart visualisations rendered inside the application
+- Microsoft Access persistence through UCanAccess
+- CSV import and export
+- Undo support for destructive table actions
+- Built-in sample data so the app is immediately demonstrable
+- Prediction-style outcome summary using attendance, study time, grades, and credits
+- GitHub Actions compile verification on every push and pull request
 
 ## Demo Login
 
 - Username: `student`
 - Password: `password123`
 
+These are demo-only credentials stored for local portfolio use.
+
 ## Run Locally
 
 ### Requirements
 
-- Java installed and available on `PATH`
-- Windows environment
+- JDK 17 or newer
+- Windows is the primary demo target because the application uses a bundled Microsoft Access database through UCanAccess
 
 ### Start the demo
 
-1. Open the project folder.
-2. Run `run-demo.bat`.
-3. Sign in with the demo credentials above.
+```powershell
+.\run-demo.bat
+```
 
-## Demo Walkthrough
+The launcher compiles the current source before starting `LoginWindow`.
 
-If you are presenting this project, this is the cleanest flow:
+## Suggested Demo Walkthrough
 
-1. Launch the application and sign in with the demo credentials.
-2. Show the sample module data that loads automatically when the database is empty.
-3. Point out the weighted predicted final grade at the bottom of the dashboard.
-4. Toggle between the bar chart and pie chart views.
-5. Add a new module to demonstrate validation and live updates.
-6. Delete or clear rows and restore them with `Undo Clear`.
-7. Save the current state to the database or export it to CSV.
-8. Use `Predict Outcome` to generate the forecasting summary dialog.
-
-## Features
-
-### Dashboard
-
-- Read-only module table with sorting
-- Automatic weighted final grade calculation
-- Immediate graph refresh after data changes
-
-### Data Management
-
-- Add modules with validation
-- Remove individual rows
-- Clear and restore table state
-- Save and load records from `Database/StudentDB.accdb`
-- Export current records to CSV
-- Import CSV files that follow the app export format
-
-### Visualisation
-
-- Bar chart view for module grades
-- Pie chart view for grade classification distribution
-- Full-size chart windows for presentation use
-
-### Forecasting
-
-- Generates a short classification-style summary
-- Uses current attendance, study time, grade, and credits as inputs
+1. Sign in with the demo credentials.
+2. Review the sample module dataset and weighted predicted grade.
+3. Switch between the bar and pie chart views.
+4. Add a module to demonstrate validation and live recalculation.
+5. Delete or clear records and use the undo flow.
+6. Save to the local database or export to CSV.
+7. Run the outcome prediction summary.
 
 ## Technical Overview
 
-### Stack
+**Stack:** Java, Swing, UCanAccess, Microsoft Access
 
-- Java
-- Swing
-- UCanAccess
-- Microsoft Access `.accdb`
+Key files:
 
-### Main files
-
-- `src/LoginWindow.java`: login screen and demo entry point
-- `src/MainWindow.java`: dashboard, module management, visualisation, forecasting flow
-- `src/DBConnector.java`: project-relative database resolution and connection handling
-- `src/ModuleDAO.java`: database read and write operations
-- `src/RandomForestModel.java`: simple prediction helper used by the forecasting dialog
+- `src/LoginWindow.java` — login and demo entry point
+- `src/MainWindow.java` — dashboard, module management, visualisation, and prediction flow
+- `src/DBConnector.java` — project-relative database resolution and connection handling
+- `src/ModuleDAO.java` — database reads and writes
+- `src/RandomForestModel.java` — lightweight prediction helper used by the outcome summary
 
 ## Project Structure
 
 ```text
-src/        Java source files
-bin/        Compiled classes
-Database/   Local Access database
-lib/        Database driver dependencies
+src/        Java source and UI assets
+Database/   Bundled local demo database
+lib/        Database-driver dependencies
 run-demo.bat
 README.md
 ```
 
-## Notes
+Generated Java build output is intentionally excluded from the repository.
 
-- The application is designed for local demo use rather than production deployment.
-- If the database is empty, sample data is loaded automatically to keep the first run presentation-ready.
-- The launcher script compiles the source before starting the application.
+## Verification
+
+GitHub Actions compiles the main application source against the bundled database dependencies on every push and pull request. This catches syntax errors, missing classes, and broken compile-time integrations before changes reach the main branch.
+
+## Scope and Limitations
+
+This is a local portfolio/dissertation application rather than a production education platform. The prediction feature is intended to demonstrate data-driven application design and should not be treated as an authoritative academic outcome model.
 
 ## What This Demonstrates
 
-This project is intended to show:
-
-- desktop application design
-- event-driven UI programming
-- input validation
-- local persistence
-- file import and export
-- presentation-focused product thinking
-
+- Object-oriented Java development
+- Event-driven desktop UI engineering
+- Database integration and persistence
+- Input validation and user-state management
+- CSV import/export
+- Data visualisation
+- End-to-end delivery of a substantial final-year project
