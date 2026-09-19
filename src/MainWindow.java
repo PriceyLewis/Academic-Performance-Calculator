@@ -654,20 +654,12 @@ public class MainWindow {
 
             RandomForestModel predictor = new RandomForestModel();
             predictor.train(buildTrainingData());
+            RandomForestModel.Prediction result = predictor.predictWithConfidence(
+                attendance, hoursStudied, grade, credits
+            );
 
-            Map<String, Integer> votes = new HashMap<>();
-            for (int i = 0; i < 100; i++) {
-                String prediction = predictor.predict(
-                    attendance + (Math.random() - 0.5) * 2,
-                    hoursStudied + (Math.random() - 0.5) * 2,
-                    grade + (Math.random() - 0.5) * 2,
-                    credits + (Math.random() - 0.5) * 2
-                );
-                votes.put(prediction, votes.getOrDefault(prediction, 0) + 1);
-            }
-
-            String finalPrediction = votes.entrySet().stream().max(Map.Entry.comparingByValue()).orElseThrow().getKey();
-            int confidence = votes.get(finalPrediction);
+            String finalPrediction = result.classification();
+            int confidence = result.confidencePercent();
             JTextArea textArea = new JTextArea(buildPredictionReport(finalPrediction, confidence, attendance, hoursStudied, grade, credits));
             textArea.setEditable(false);
             textArea.setFont(new Font("Consolas", Font.PLAIN, 13));
