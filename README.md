@@ -1,93 +1,145 @@
 # Academic Performance Calculator
 
-A Java Swing desktop application built for my final-year Computer Science dissertation. It combines module management, weighted performance tracking, visualisation, local persistence, CSV import/export, and prediction-style academic guidance in one self-contained portfolio demo.
+[![Java CI](https://github.com/PriceyLewis/Academic-Performance-Calculator-Dissertation-/actions/workflows/compile.yml/badge.svg)](https://github.com/PriceyLewis/Academic-Performance-Calculator-Dissertation-/actions/workflows/compile.yml)
 
-## Why This Project Matters
+A Java Swing desktop application developed from my final-year Computer Science dissertation and upgraded into a recruiter-friendly engineering demo. It combines module management, weighted performance tracking, visualisation, Microsoft Access persistence, CSV workflows and a dependency-free **random-forest classifier**.
 
-This project demonstrates more than a single algorithm or UI screen. It shows an end-to-end desktop application with validation, database access, persistence, visual feedback, file handling, and a complete user flow from login through analysis.
+![Academic Performance Calculator portfolio preview](https://priceylewis.github.io/assets/dissertation.svg)
 
-## Highlights
+> The image above is a representative portfolio preview. The application itself runs locally as a Java Swing desktop app.
 
-- Java Swing desktop interface with a guided demo login
-- Module management with validation and live weighted-grade updates
-- Bar and pie chart visualisations rendered inside the application
-- Microsoft Access persistence through UCanAccess
-- CSV import and export
-- Undo support for destructive table actions
-- Built-in sample data so the app is immediately demonstrable
-- Prediction-style outcome summary using attendance, study time, grades, and credits
-- GitHub Actions compile verification on every push and pull request
+## Why this project is useful in my portfolio
 
-## Demo Login
+This repository shows an end-to-end Java application rather than an isolated algorithm:
 
-- Username: `student`
-- Password: `password123`
+- event-driven Swing UI and validation;
+- persistent module data through UCanAccess;
+- CSV import/export and destructive-action recovery;
+- custom chart rendering;
+- a real random-forest implementation using bootstrap sampling, random feature subsets and Gini impurity;
+- deterministic automated tests;
+- Maven dependency management and a runnable shaded JAR;
+- GitHub Actions verification on every push and pull request.
 
-These are demo-only credentials stored for local portfolio use.
+## Demo login
 
-## Run Locally
+- **Username:** `student`
+- **Password:** `password123`
 
-### Requirements
+These credentials are intentionally local and demo-only.
 
-- JDK 17 or newer
-- Windows is the primary demo target because the application uses a bundled Microsoft Access database through UCanAccess
+## Quick start
 
-### Start the demo
+Requirements:
+
+- JDK 17+
+- Maven 3.9+
+
+### Windows
 
 ```powershell
 .\run-demo.bat
 ```
 
-The launcher compiles the current source before starting `LoginWindow`.
+### Linux / macOS
 
-## Suggested Demo Walkthrough
-
-1. Sign in with the demo credentials.
-2. Review the sample module dataset and weighted predicted grade.
-3. Switch between the bar and pie chart views.
-4. Add a module to demonstrate validation and live recalculation.
-5. Delete or clear records and use the undo flow.
-6. Save to the local database or export to CSV.
-7. Run the outcome prediction summary.
-
-## Technical Overview
-
-**Stack:** Java, Swing, UCanAccess, Microsoft Access
-
-Key files:
-
-- `src/LoginWindow.java` — login and demo entry point
-- `src/MainWindow.java` — dashboard, module management, visualisation, and prediction flow
-- `src/DBConnector.java` — project-relative database resolution and connection handling
-- `src/ModuleDAO.java` — database reads and writes
-- `src/RandomForestModel.java` — lightweight prediction helper used by the outcome summary
-
-## Project Structure
-
-```text
-src/        Java source and UI assets
-Database/   Bundled local demo database
-lib/        Database-driver dependencies
-run-demo.bat
-README.md
+```bash
+chmod +x run-demo.sh
+./run-demo.sh
 ```
 
-Generated Java build output is intentionally excluded from the repository.
+Or build directly:
+
+```bash
+mvn verify
+java -jar target/academic-performance-calculator.jar
+```
+
+The bundled `Database/StudentDB.accdb` provides the local demo database. No external service or API key is required.
+
+## Suggested recruiter walkthrough
+
+1. Sign in using the demo credentials.
+2. Review the pre-populated modules and weighted grade.
+3. Switch between bar and pie visualisations.
+4. Add or remove a module and observe live recalculation.
+5. Demonstrate clear + undo and CSV import/export.
+6. Save/reload data through the Access database.
+7. Open **Predict Outcome** and show the forest classification plus ensemble vote share.
+
+## Random-forest implementation
+
+`src/RandomForestModel.java` now implements an inspectable educational random forest rather than disguising a nearest-neighbour heuristic as machine learning.
+
+Each of the 101 trees:
+
+1. receives a bootstrap sample of the training records;
+2. considers a random subset of features at each node;
+3. evaluates candidate thresholds using Gini impurity;
+4. recursively grows until the depth/sample stopping conditions are met;
+5. casts one classification vote.
+
+The final result is the majority vote across the forest. The seed is fixed so the portfolio demo and automated tests are reproducible.
+
+The current features are attendance, hours studied, current grade and credits. Labels are derived from the familiar UK grade bands used by the original dissertation demo.
+
+**Important:** this demonstrates implementation and application integration. It is not a scientifically validated student-outcome model and should not be used to make real academic decisions.
+
+## Architecture
+
+```text
+Swing UI
+   |
+   +--> Module validation / table state
+   |          |
+   |          +--> CSV import / export
+   |          +--> UCanAccess --> StudentDB.accdb
+   |
+   +--> Custom charts
+   |
+   +--> RandomForestModel
+              |
+              +--> 101 bootstrapped decision trees
+              +--> random feature selection
+              +--> Gini split selection
+              +--> majority vote + confidence
+```
+
+## Project structure
+
+```text
+src/          application source
+tests/        JUnit regression tests
+Database/     bundled demo Access database
+pom.xml       dependencies, tests and packaged JAR build
+run-demo.bat  Windows launcher
+run-demo.sh   Linux/macOS launcher
+```
+
+Dependency binaries are intentionally **not** committed. Maven resolves the maintained UCanAccess fork and its transitive dependencies during the build.
 
 ## Verification
 
-GitHub Actions compiles the main application source against the bundled database dependencies on every push and pull request. This catches syntax errors, missing classes, and broken compile-time integrations before changes reach the main branch.
+```bash
+mvn verify
+```
 
-## Scope and Limitations
+The CI pipeline compiles the application, runs JUnit tests and produces a runnable `academic-performance-calculator.jar` artifact on successful pushes.
 
-This is a local portfolio/dissertation application rather than a production education platform. The prediction feature is intended to demonstrate data-driven application design and should not be treated as an authoritative academic outcome model.
+Current automated coverage verifies that the forest contains the expected ensemble size, classifies representative grade bands and reports a valid majority-vote confidence.
 
-## What This Demonstrates
+## What this demonstrates
 
-- Object-oriented Java development
-- Event-driven desktop UI engineering
-- Database integration and persistence
-- Input validation and user-state management
-- CSV import/export
-- Data visualisation
-- End-to-end delivery of a substantial final-year project
+- Java 17 and object-oriented development
+- desktop UI engineering
+- database integration and persistence
+- Maven dependency management
+- data visualisation
+- algorithm implementation
+- deterministic automated testing
+- GitHub Actions / CI
+- maintaining and modernising an older academic codebase
+
+## Portfolio scope
+
+This remains a local portfolio/dissertation application rather than a production education platform. The prediction result is explanatory demo functionality and not an authoritative academic forecast.
