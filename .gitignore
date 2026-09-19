@@ -21,3 +21,8 @@ Thumbs.db
 # Local exports / temporary files
 *.tmp
 *.log
+
+# Maven output and local demo state
+target/
+UserFeedback.txt
+sample-data-loaded.flag
