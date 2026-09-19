@@ -654,12 +654,12 @@ public class MainWindow {
 
             RandomForestModel predictor = new RandomForestModel();
             predictor.train(buildTrainingData());
-            RandomForestModel.Prediction result = predictor.predictWithConfidence(
+            RandomForestModel.Prediction predictionResult = predictor.predictWithConfidence(
                 attendance, hoursStudied, grade, credits
             );
 
-            String finalPrediction = result.classification();
-            int confidence = result.confidencePercent();
+            String finalPrediction = predictionResult.classification();
+            int confidence = predictionResult.confidencePercent();
             JTextArea textArea = new JTextArea(buildPredictionReport(finalPrediction, confidence, attendance, hoursStudied, grade, credits));
             textArea.setEditable(false);
             textArea.setFont(new Font("Consolas", Font.PLAIN, 13));
