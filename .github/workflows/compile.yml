@@ -1,4 +1,4 @@
-name: Java compile check
+name: Java CI
 
 on:
   push:
@@ -10,26 +10,28 @@ permissions:
   contents: read
 
 jobs:
-  compile:
+  verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
-      - name: Compile dissertation source
-        run: |
-          mkdir -p build
-          javac -d build \
-            src/DBConnector.java \
-            src/DecisionTree.java \
-            src/LoginWindow.java \
-            src/MainWindow.java \
-            src/Module.java \
-            src/ModuleDAO.java \
-            src/RandomForestModel.java \
-            src/RandomForestRegressor.java
+          cache: maven
+
+      - name: Compile, test and package
+        run: mvn --batch-mode --no-transfer-progress verify
+
+      - name: Upload runnable demo JAR
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: academic-performance-calculator
+          path: target/academic-performance-calculator.jar
+          if-no-files-found: error
