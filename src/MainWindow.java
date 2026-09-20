@@ -68,6 +68,7 @@ public class MainWindow {
     private static final Color COLOR_FAIL = new Color(204, 51, 51);
     private static final String SAMPLE_DATA_FLAG = "sample-data-loaded.flag";
     private static final boolean BROWSER_DEMO = Boolean.getBoolean("portfolio.browser");
+    private static final boolean COMPACT_BROWSER = BROWSER_DEMO && Boolean.getBoolean("portfolio.compact");
 
     private final JFrame frame;
     private final DefaultTableModel model;
@@ -89,8 +90,13 @@ public class MainWindow {
 
         frame = new JFrame("Academic Performance Calculator");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setMinimumSize(new Dimension(1100, 700));
+        if (COMPACT_BROWSER) {
+            frame.setSize(370, 740);
+            frame.setMinimumSize(new Dimension(340, 640));
+        } else {
+            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            frame.setMinimumSize(new Dimension(1100, 700));
+        }
         frame.setLayout(new BorderLayout());
         frame.setLocationRelativeTo(null);
         frame.setIconImage(loadScaledIcon("App Icon.png", 64, 64).getImage());
@@ -131,11 +137,15 @@ public class MainWindow {
 
     private void buildLayout() {
         frame.setJMenuBar(buildMenuBar());
-        frame.add(buildSidebar(), BorderLayout.WEST);
+        if (!COMPACT_BROWSER) {
+            frame.add(buildSidebar(), BorderLayout.WEST);
+        }
         frame.add(buildCenterPanel(), BorderLayout.CENTER);
-        graphPanel.setPreferredSize(new Dimension(360, 0));
-        graphPanel.setBorder(BorderFactory.createTitledBorder("Visual Dashboard"));
-        frame.add(graphPanel, BorderLayout.EAST);
+        if (!COMPACT_BROWSER) {
+            graphPanel.setPreferredSize(new Dimension(360, 0));
+            graphPanel.setBorder(BorderFactory.createTitledBorder("Visual Dashboard"));
+            frame.add(graphPanel, BorderLayout.EAST);
+        }
         frame.add(buildBottomPanel(), BorderLayout.SOUTH);
     }
 
@@ -251,7 +261,9 @@ public class MainWindow {
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(8, 12, 12, 12));
 
-        JPanel actions = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
+        JPanel actions = COMPACT_BROWSER
+            ? new JPanel(new GridLayout(0, 2, 6, 6))
+            : new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
         JButton addButton = new JButton("Add Module");
         JButton deleteButton = new JButton("Delete Selected");
         JButton clearButton = new JButton("Clear Table");
@@ -292,11 +304,13 @@ public class MainWindow {
         actions.add(deleteButton);
         actions.add(clearButton);
         actions.add(undoButton);
-        actions.add(loadDatabaseButton);
-        actions.add(saveDatabaseButton);
+        if (!COMPACT_BROWSER) {
+            actions.add(loadDatabaseButton);
+            actions.add(saveDatabaseButton);
+            actions.add(importButton);
+            actions.add(toggleGraphButton);
+        }
         actions.add(exportButton);
-        actions.add(importButton);
-        actions.add(toggleGraphButton);
         actions.add(openGraphButton);
         actions.add(pieChartButton);
         actions.add(predictButton);
@@ -367,7 +381,7 @@ public class MainWindow {
     private void showFullGraph() {
         JFrame graphWindow = new JFrame("Full Graph View");
         graphWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        graphWindow.setSize(900, 600);
+        graphWindow.setSize(COMPACT_BROWSER ? 350 : 900, COMPACT_BROWSER ? 560 : 600);
         graphWindow.setLocationRelativeTo(frame);
 
         graphWindow.add(new BarChartView(true));
@@ -377,7 +391,7 @@ public class MainWindow {
     private void showGradePieChart() {
         JFrame pieFrame = new JFrame("Grade Distribution");
         pieFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        pieFrame.setSize(680, 420);
+        pieFrame.setSize(COMPACT_BROWSER ? 350 : 680, COMPACT_BROWSER ? 520 : 420);
         pieFrame.setLocationRelativeTo(frame);
         pieFrame.add(new PieChartView());
         pieFrame.setVisible(true);
