@@ -19,6 +19,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -66,6 +67,7 @@ public class MainWindow {
     private static final Color COLOR_LOWER_SECOND = new Color(255, 153, 0);
     private static final Color COLOR_FAIL = new Color(204, 51, 51);
     private static final String SAMPLE_DATA_FLAG = "sample-data-loaded.flag";
+    private static final boolean BROWSER_DEMO = Boolean.getBoolean("portfolio.browser");
 
     private final JFrame frame;
     private final DefaultTableModel model;
@@ -150,6 +152,13 @@ public class MainWindow {
         exportItem.addActionListener(e -> exportModulesToCSV());
         exitItem.addActionListener(e -> attemptExit());
 
+        if (BROWSER_DEMO) {
+            loadDatabaseItem.setEnabled(false);
+            saveDatabaseItem.setEnabled(false);
+            loadDatabaseItem.setToolTipText("Microsoft Access persistence is available in the desktop build.");
+            saveDatabaseItem.setToolTipText("Microsoft Access persistence is available in the desktop build.");
+        }
+
         fileMenu.add(loadDatabaseItem);
         fileMenu.add(saveDatabaseItem);
         fileMenu.add(exportItem);
@@ -217,7 +226,9 @@ public class MainWindow {
         title.setFont(new Font("Segoe UI", Font.BOLD, 20));
 
         JTextArea intro = new JTextArea(
-            "Use the sample data for an immediate demo, or load records from the Access database or a CSV file."
+            BROWSER_DEMO
+                ? "Browser demo: sample data is loaded automatically. Add, remove, chart and predict directly in the browser; Access persistence stays in the desktop build."
+                : "Use the sample data for an immediate demo, or load records from the Access database or a CSV file."
         );
         intro.setWrapStyleWord(true);
         intro.setLineWrap(true);
@@ -262,6 +273,16 @@ public class MainWindow {
         exportButton.addActionListener(e -> exportModulesToCSV());
         importButton.addActionListener(e -> loadModulesFromCSV());
         toggleGraphButton.addActionListener(e -> toggleGraph());
+
+        if (BROWSER_DEMO) {
+            loadDatabaseButton.setEnabled(false);
+            saveDatabaseButton.setEnabled(false);
+            importButton.setEnabled(false);
+            loadDatabaseButton.setToolTipText("Desktop-only: loads the bundled Microsoft Access database.");
+            saveDatabaseButton.setToolTipText("Desktop-only: writes to the bundled Microsoft Access database.");
+            importButton.setToolTipText("Desktop-only in this portfolio browser build.");
+            exportButton.setToolTipText("Downloads the current module table as CSV.");
+        }
         openGraphButton.addActionListener(e -> showFullGraph());
         pieChartButton.addActionListener(e -> showGradePieChart());
         predictButton.addActionListener(e -> showPredictionDialog());
@@ -286,6 +307,11 @@ public class MainWindow {
     }
 
     private void loadInitialData() {
+        if (BROWSER_DEMO) {
+            loadSampleModules();
+            return;
+        }
+
         if (hasDatabaseContent()) {
             try {
                 loadModulesFromDatabase(false);
@@ -519,15 +545,20 @@ public class MainWindow {
     }
 
     private void exportModulesToCSV() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Export Modules to CSV");
-        if (fileChooser.showSaveDialog(frame) != JFileChooser.APPROVE_OPTION) {
-            return;
-        }
+        File fileToSave;
+        if (BROWSER_DEMO) {
+            fileToSave = new File("/files/downloads/academic-performance-modules.csv");
+        } else {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Export Modules to CSV");
+            if (fileChooser.showSaveDialog(frame) != JFileChooser.APPROVE_OPTION) {
+                return;
+            }
 
-        File fileToSave = fileChooser.getSelectedFile();
-        if (!fileToSave.getName().toLowerCase().endsWith(".csv")) {
-            fileToSave = new File(fileToSave.getParentFile(), fileToSave.getName() + ".csv");
+            fileToSave = fileChooser.getSelectedFile();
+            if (!fileToSave.getName().toLowerCase().endsWith(".csv")) {
+                fileToSave = new File(fileToSave.getParentFile(), fileToSave.getName() + ".csv");
+            }
         }
 
         try (PrintWriter writer = new PrintWriter(fileToSave, StandardCharsets.UTF_8)) {
@@ -539,7 +570,10 @@ public class MainWindow {
                 }
                 writer.println(String.join(",", values));
             }
-            JOptionPane.showMessageDialog(frame, "CSV exported to:\n" + fileToSave.getAbsolutePath(), "Export Complete", JOptionPane.INFORMATION_MESSAGE);
+            String exportMessage = BROWSER_DEMO
+                ? "CSV created. Your browser should download academic-performance-modules.csv automatically."
+                : "CSV exported to:\n" + fileToSave.getAbsolutePath();
+            JOptionPane.showMessageDialog(frame, exportMessage, "Export Complete", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(frame, "Failed to export CSV.\n" + ex.getMessage(), "Export Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -831,6 +865,10 @@ public class MainWindow {
     }
 
     private void setupIdleLogout() {
+        if (BROWSER_DEMO) {
+            return;
+        }
+
         if (idleTimer != null) {
             idleTimer.stop();
         }
@@ -858,6 +896,16 @@ public class MainWindow {
             return;
         }
 
+        if (BROWSER_DEMO) {
+            JOptionPane.showMessageDialog(
+                frame,
+                "Thanks for the feedback. Browser-demo feedback is intentionally not stored.",
+                "Feedback",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+            return;
+        }
+
         Path feedbackPath = DBConnector.resolveProjectPath("UserFeedback.txt");
         try {
             Files.writeString(
@@ -881,8 +929,10 @@ public class MainWindow {
             "Home refreshes the dashboard.\n"
                 + "View Modules opens the full module table.\n"
                 + "Full Graph and Pie Chart expand the visualisations.\n"
-                + "Save Database writes the current table to the Access database.\n"
-                + "Load Database restores saved records.\n"
+                + (BROWSER_DEMO
+                    ? "The browser demo uses disposable sample data; Access load/save remains available in the desktop build.\n"
+                    : "Save Database writes the current table to the Access database.\nLoad Database restores saved records.\n")
+                + "Export CSV downloads the current table.\n"
                 + "Predict Outcome generates a concise performance summary from the current inputs.",
             "Feature Guide",
             JOptionPane.INFORMATION_MESSAGE
@@ -893,9 +943,11 @@ public class MainWindow {
         JOptionPane.showMessageDialog(
             frame,
             "1. Sign in with the demo credentials.\n"
-                + "2. Review the sample modules or replace them with imported or manually entered data.\n"
+                + "2. Review the sample modules or add your own module.\n"
                 + "3. Demonstrate the weighted final grade, bar chart, and pie chart views.\n"
-                + "4. Save the current state to the Access database or export it to CSV.\n"
+                + (BROWSER_DEMO
+                    ? "4. Export the current table to CSV; the browser demo keeps its data disposable.\n"
+                    : "4. Save the current state to the Access database or export it to CSV.\n")
                 + "5. Use Predict Outcome to generate a short forecasting summary.",
             "Demo Walkthrough",
             JOptionPane.INFORMATION_MESSAGE
@@ -905,7 +957,9 @@ public class MainWindow {
     private void showAboutDialog() {
         JOptionPane.showMessageDialog(
             frame,
-            "Academic Performance Calculator\nVersion 2.0 Demo Build\nDesktop portfolio application for module tracking, grade visualisation, and simple academic performance forecasting.",
+            "Academic Performance Calculator\nVersion 2.1 Portfolio Build\n"
+                + (BROWSER_DEMO ? "Running in browser-demo mode via CheerpJ.\n" : "")
+                + "Java Swing portfolio application for module tracking, grade visualisation, and academic performance forecasting.",
             "About",
             JOptionPane.INFORMATION_MESSAGE
         );
@@ -920,7 +974,11 @@ public class MainWindow {
     }
 
     private void attemptExit() {
-        if (!confirmDiscardChanges("Exit the application?")) {
+        if (!confirmDiscardChanges(BROWSER_DEMO ? "Close the browser demo window?" : "Exit the application?")) {
+            return;
+        }
+        if (BROWSER_DEMO) {
+            frame.dispose();
             return;
         }
         System.exit(0);
@@ -960,12 +1018,18 @@ public class MainWindow {
     }
 
     private ImageIcon loadScaledIcon(String iconFileName, int width, int height) {
-        Path iconPath = DBConnector.resolveProjectPath("src", "Icons", iconFileName);
-        if (!Files.exists(iconPath)) {
-            return new ImageIcon();
+        URL resource = MainWindow.class.getResource("/Icons/" + iconFileName);
+        ImageIcon original;
+        if (resource != null) {
+            original = new ImageIcon(resource);
+        } else {
+            Path iconPath = DBConnector.resolveProjectPath("src", "Icons", iconFileName);
+            if (!Files.exists(iconPath)) {
+                return new ImageIcon();
+            }
+            original = new ImageIcon(iconPath.toString());
         }
 
-        ImageIcon original = new ImageIcon(iconPath.toString());
         Image scaled = original.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(scaled);
     }
