@@ -107,6 +107,7 @@ public class LoginWindow {
 
         frame.add(content, BorderLayout.CENTER);
         frame.setVisible(true);
+        BrowserBridge.signalReady("login");
     }
 
     public void authenticate() {
