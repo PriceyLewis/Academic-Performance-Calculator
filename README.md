@@ -2,6 +2,15 @@
 
 [![Java CI](https://github.com/PriceyLewis/Academic-Performance-Calculator-Dissertation-/actions/workflows/compile.yml/badge.svg)](https://github.com/PriceyLewis/Academic-Performance-Calculator-Dissertation-/actions/workflows/compile.yml)
 
+
+## Portfolio release status
+
+**v1.0.0 Portfolio Release · Verified 20 September 2026**
+
+This is the recruiter-facing release of the project. Automated tests and the public demo journey have been re-verified before publication.
+
+[Read the v1.0.0 release notes](./RELEASE_NOTES_v1.0.0.md)
+
 [Launch the browser demo](https://priceylewis.github.io/Academic-Performance-Calculator-Dissertation-/) · [View the recruiter case study](https://priceylewis.github.io/projects/dissertation.html)
 
 A Java Swing desktop application developed from my final-year Computer Science dissertation and upgraded into a recruiter-friendly engineering demo. It combines module management, weighted performance tracking, visualisation, Microsoft Access persistence, CSV workflows and a dependency-free **random-forest classifier**.
