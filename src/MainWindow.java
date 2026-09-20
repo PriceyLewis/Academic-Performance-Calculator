@@ -1074,7 +1074,7 @@ public class MainWindow {
         }
     }
 
-    private double parseDouble(String value, String fieldName) {
+    static double parseDouble(String value, String fieldName) {
         try {
             double parsed = Double.parseDouble(value.trim());
             if (!Double.isFinite(parsed)) {
