@@ -101,8 +101,8 @@ jobs:
                 status: document.getElementById('status')?.textContent || '',
               }));
 
-              if (!state.started || !state.javaReady || state.stage !== 'login' || !state.displayCreated || !state.displayPresent || state.containerChildren < 1) {
-                throw new Error('Java Swing login did not become ready in CheerpJ: ' + JSON.stringify(state));
+              if (!state.started || !state.javaReady || state.stage !== 'dashboard' || !state.displayCreated || !state.displayPresent || state.containerChildren < 1) {
+                throw new Error('Java Swing dashboard did not become ready in CheerpJ: ' + JSON.stringify(state));
               }
               console.log('Browser demo smoke state:', state);
             } catch (error) {
