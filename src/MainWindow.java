@@ -1076,9 +1076,13 @@ public class MainWindow {
 
     private double parseDouble(String value, String fieldName) {
         try {
-            return Double.parseDouble(value.trim());
+            double parsed = Double.parseDouble(value.trim());
+            if (!Double.isFinite(parsed)) {
+                throw new NumberFormatException("Non-finite value");
+            }
+            return parsed;
         } catch (Exception ex) {
-            throw new IllegalArgumentException(fieldName + " must be numeric.");
+            throw new IllegalArgumentException(fieldName + " must be a finite numeric value.");
         }
     }
 
