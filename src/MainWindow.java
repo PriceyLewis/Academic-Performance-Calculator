@@ -1160,9 +1160,9 @@ public class MainWindow {
             int width = getWidth();
             int height = getHeight();
             int left = fullSize ? 70 : 50;
-            int right = 20;
+            int right = fullSize ? 80 : 70;
             int top = 30;
-            int bottom = fullSize ? 80 : 60;
+            int bottom = fullSize ? 110 : 95;
             int chartWidth = Math.max(1, width - left - right);
             int chartHeight = Math.max(1, height - top - bottom);
 
@@ -1188,7 +1188,8 @@ public class MainWindow {
                 g2.setColor(isDarkMode ? Color.WHITE : Color.BLACK);
                 g2.setFont(new Font("Segoe UI", Font.PLAIN, fullSize ? 12 : 11));
                 g2.drawString(String.format("%.0f", grade.grade()), x + 2, y - 6);
-                drawRotatedLabel(g2, grade.name(), x + (barWidth / 2), top + chartHeight + 8);
+                String chartLabel = shortenChartLabel(grade.name(), fullSize ? 24 : 12);
+                drawRotatedLabel(g2, chartLabel, x + (barWidth / 2), top + chartHeight + 12);
             }
 
             g2.dispose();
@@ -1258,6 +1259,18 @@ public class MainWindow {
         g2.setColor(isDarkMode ? Color.WHITE : Color.DARK_GRAY);
         g2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         g2.drawString(text, 20, 30);
+    }
+
+    static String shortenChartLabel(String text, int maxCharacters) {
+        if (text == null) {
+            return "";
+        }
+        String trimmed = text.trim();
+        int limit = Math.max(4, maxCharacters);
+        if (trimmed.length() <= limit) {
+            return trimmed;
+        }
+        return trimmed.substring(0, limit - 1).trim() + "…";
     }
 
     private void drawRotatedLabel(Graphics2D g2, String text, int centerX, int baselineY) {
