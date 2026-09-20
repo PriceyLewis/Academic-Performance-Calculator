@@ -2,9 +2,7 @@ import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -87,6 +85,7 @@ public class MainWindow {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignored) {
         }
+        UiTheme.installDefaults();
 
         frame = new JFrame("Academic Performance Calculator");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -98,6 +97,7 @@ public class MainWindow {
             frame.setMinimumSize(new Dimension(1100, 700));
         }
         frame.setLayout(new BorderLayout());
+        frame.getContentPane().setBackground(UiTheme.BACKGROUND);
         frame.setLocationRelativeTo(null);
         frame.setIconImage(loadScaledIcon("App Icon.png", 64, 64).getImage());
         frame.addWindowListener(new WindowAdapter() {
@@ -116,10 +116,10 @@ public class MainWindow {
         table = new JTable(model);
         table.setRowSorter(new TableRowSorter<>(model));
         table.setFillsViewportHeight(true);
-        table.setRowHeight(26);
-        table.setGridColor(Color.LIGHT_GRAY);
+        UiTheme.styleTable(table, false);
 
         graphPanel = new JPanel(new BorderLayout());
+        graphPanel.setBackground(UiTheme.SURFACE);
         finalGradeLabel = new JLabel("Predicted Final Grade: N/A");
         idleActivityListener = event -> {
             if (idleTimer != null && idleTimer.isRunning()) {
@@ -142,8 +142,11 @@ public class MainWindow {
         }
         frame.add(buildCenterPanel(), BorderLayout.CENTER);
         if (!COMPACT_BROWSER) {
-            graphPanel.setPreferredSize(new Dimension(360, 0));
-            graphPanel.setBorder(BorderFactory.createTitledBorder("Visual Dashboard"));
+            graphPanel.setPreferredSize(new Dimension(380, 0));
+            graphPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(16, 0, 16, 16),
+                UiTheme.cardBorder(12)
+            ));
             frame.add(graphPanel, BorderLayout.EAST);
         }
         frame.add(buildBottomPanel(), BorderLayout.SOUTH);
@@ -191,14 +194,33 @@ public class MainWindow {
 
     private JPanel buildSidebar() {
         JPanel sidebar = new JPanel();
-        sidebar.setBackground(new Color(245, 247, 250));
+        sidebar.setBackground(UiTheme.SURFACE);
+        sidebar.setPreferredSize(new Dimension(210, 0));
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
-        sidebar.setBorder(BorderFactory.createEmptyBorder(20, 12, 20, 12));
+        sidebar.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(0, 0, 0, 1, UiTheme.BORDER),
+            BorderFactory.createEmptyBorder(24, 16, 20, 16)
+        ));
 
         JLabel logoLabel = new JLabel(loadScaledIcon("App Icon.png", 64, 64));
         logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         sidebar.add(logoLabel);
-        sidebar.add(Box.createRigidArea(new Dimension(0, 20)));
+        sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        JLabel productName = new JLabel("Performance Hub");
+        productName.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        productName.setForeground(UiTheme.TEXT);
+        productName.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sidebar.add(productName);
+        sidebar.add(Box.createRigidArea(new Dimension(0, 6)));
+
+        JLabel navigation = new JLabel("NAVIGATION");
+        navigation.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        navigation.setForeground(UiTheme.MUTED);
+        navigation.setAlignmentX(Component.LEFT_ALIGNMENT);
+        sidebar.add(Box.createRigidArea(new Dimension(0, 18)));
+        sidebar.add(navigation);
+        sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
 
         JButton btnHome = createSidebarButton("Home", "Home.png");
         JButton btnFeedback = createSidebarButton("Feedback", "Feedback.png");
@@ -230,11 +252,16 @@ public class MainWindow {
     }
 
     private JPanel buildCenterPanel() {
-        JPanel centerPanel = new JPanel(new BorderLayout(0, 8));
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+        JPanel centerPanel = new JPanel(new BorderLayout(0, 14));
+        centerPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createEmptyBorder(16, 16, 16, 16),
+            UiTheme.cardBorder(18)
+        ));
+        centerPanel.setBackground(UiTheme.SURFACE);
 
         JLabel title = new JLabel("Your Modules");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        title.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        title.setForeground(UiTheme.TEXT);
 
         JTextArea intro = new JTextArea(
             BROWSER_DEMO
@@ -246,6 +273,8 @@ public class MainWindow {
         intro.setEditable(false);
         intro.setOpaque(false);
         intro.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        intro.setForeground(UiTheme.MUTED);
+        intro.setBorder(BorderFactory.createEmptyBorder(6, 0, 2, 0));
 
         JPanel heading = new JPanel(new BorderLayout());
         heading.setOpaque(false);
@@ -253,17 +282,24 @@ public class MainWindow {
         heading.add(intro, BorderLayout.CENTER);
 
         centerPanel.add(heading, BorderLayout.NORTH);
-        centerPanel.add(new JScrollPane(table), BorderLayout.CENTER);
+        JScrollPane tableScroll = new JScrollPane(table);
+        tableScroll.setBorder(BorderFactory.createLineBorder(UiTheme.BORDER));
+        centerPanel.add(tableScroll, BorderLayout.CENTER);
         return centerPanel;
     }
 
     private JPanel buildBottomPanel() {
         JPanel bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.setBorder(BorderFactory.createEmptyBorder(8, 12, 12, 12));
+        bottomPanel.setBackground(UiTheme.SURFACE);
+        bottomPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(1, 0, 0, 0, UiTheme.BORDER),
+            BorderFactory.createEmptyBorder(12, 16, 14, 16)
+        ));
 
         JPanel actions = COMPACT_BROWSER
-            ? new JPanel(new GridLayout(0, 2, 6, 6))
-            : new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
+            ? new JPanel(new GridLayout(0, 2, 8, 8))
+            : new JPanel(new GridLayout(0, 4, 8, 8));
+        actions.setBackground(UiTheme.SURFACE);
         JButton addButton = new JButton("Add Module");
         JButton deleteButton = new JButton("Delete Selected");
         JButton clearButton = new JButton("Clear Table");
@@ -276,6 +312,15 @@ public class MainWindow {
         JButton openGraphButton = new JButton("Open Full Graph");
         JButton pieChartButton = new JButton("Pie Chart");
         JButton predictButton = new JButton("Predict Outcome");
+
+        UiTheme.styleButton(addButton, "primary");
+        UiTheme.styleButton(predictButton, "primary");
+        UiTheme.styleButton(deleteButton, "danger");
+        UiTheme.styleButton(clearButton, "danger");
+        for (JButton button : new JButton[] { undoButton, loadDatabaseButton, saveDatabaseButton,
+                exportButton, importButton, toggleGraphButton, openGraphButton, pieChartButton }) {
+            UiTheme.styleButton(button, "secondary");
+        }
 
         addButton.addActionListener(e -> addModule());
         deleteButton.addActionListener(e -> deleteSelectedModule());
@@ -316,6 +361,7 @@ public class MainWindow {
         actions.add(predictButton);
 
         finalGradeLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        finalGradeLabel.setBorder(BorderFactory.createEmptyBorder(12, 2, 0, 2));
         bottomPanel.add(actions, BorderLayout.CENTER);
         bottomPanel.add(finalGradeLabel, BorderLayout.SOUTH);
         return bottomPanel;
@@ -855,28 +901,10 @@ public class MainWindow {
 
     private void toggleDarkMode() {
         isDarkMode = !isDarkMode;
-        Color backgroundColor = isDarkMode ? new Color(45, 45, 45) : Color.WHITE;
-        Color foregroundColor = isDarkMode ? Color.WHITE : Color.BLACK;
-        applyTheme(frame.getContentPane(), backgroundColor, foregroundColor);
-        table.setBackground(backgroundColor);
-        table.setForeground(foregroundColor);
-        table.getTableHeader().setBackground(isDarkMode ? new Color(65, 65, 65) : new Color(240, 240, 240));
-        table.getTableHeader().setForeground(foregroundColor);
-        table.setGridColor(isDarkMode ? new Color(85, 85, 85) : Color.LIGHT_GRAY);
+        UiTheme.applyTheme(frame.getContentPane(), isDarkMode);
+        UiTheme.styleTable(table, isDarkMode);
         refreshDashboard();
-        SwingUtilities.updateComponentTreeUI(frame);
-    }
-
-    private void applyTheme(Component component, Color background, Color foreground) {
-        if (!(component instanceof ChartViewPanel)) {
-            component.setBackground(background);
-            component.setForeground(foreground);
-        }
-        if (component instanceof Container) {
-            for (Component child : ((Container) component).getComponents()) {
-                applyTheme(child, background, foreground);
-            }
-        }
+        frame.repaint();
     }
 
     private void setupIdleLogout() {
@@ -1006,10 +1034,13 @@ public class MainWindow {
 
     private JButton createSidebarButton(String text, String iconName) {
         JButton button = new JButton(text, loadScaledIcon(iconName, 24, 24));
-        button.setMaximumSize(new Dimension(180, 40));
+        button.setMaximumSize(new Dimension(178, 42));
+        button.setPreferredSize(new Dimension(178, 42));
+        button.setHorizontalAlignment(SwingConstants.LEFT);
+        button.setIconTextGap(12);
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.setFocusPainted(false);
-        addHoverEffect(button, button.getBackground(), new Color(220, 232, 246));
+        UiTheme.styleButton(button, "secondary");
+        addHoverEffect(button, UiTheme.SURFACE, new Color(239, 246, 255));
         return button;
     }
 
