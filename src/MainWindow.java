@@ -126,6 +126,7 @@ public class MainWindow {
         refreshDashboard();
         setupIdleLogout();
         frame.setVisible(true);
+        BrowserBridge.signalReady("dashboard");
     }
 
     private void buildLayout() {
