@@ -1,6 +1,6 @@
 # Academic Performance Calculator
 
-[![Java CI](https://github.com/PriceyLewis/Academic-Performance-Calculator-Dissertation-/actions/workflows/compile.yml/badge.svg)](https://github.com/PriceyLewis/Academic-Performance-Calculator-Dissertation-/actions/workflows/compile.yml)
+[![Java CI](https://github.com/PriceyLewis/Academic-Performance-Calculator/actions/workflows/compile.yml/badge.svg)](https://github.com/PriceyLewis/Academic-Performance-Calculator/actions/workflows/compile.yml)
 
 
 ## Portfolio release status
@@ -11,7 +11,7 @@ This is the recruiter-facing release of the project. Automated tests and the pub
 
 [Read the v1.0.0 release notes](./RELEASE_NOTES_v1.0.0.md)
 
-[Launch the browser demo](https://priceylewis.github.io/Academic-Performance-Calculator-Dissertation-/) · [View the recruiter case study](https://priceylewis.github.io/projects/dissertation.html)
+[Launch the browser demo](https://priceylewis.github.io/Academic-Performance-Calculator/) · [View the recruiter case study](https://priceylewis.github.io/projects/dissertation.html)
 
 A Java Swing desktop application developed from my final-year Computer Science dissertation and upgraded into a recruiter-friendly engineering demo. It combines module management, weighted performance tracking, visualisation, Microsoft Access persistence, CSV workflows and a dependency-free **random-forest classifier**.
 
@@ -36,7 +36,7 @@ This repository shows an end-to-end Java application rather than an isolated alg
 
 The browser build runs the actual Java Swing application through CheerpJ and is automatically built, tested in Chromium and published through GitHub Pages.
 
-- [Launch browser demo](https://priceylewis.github.io/Academic-Performance-Calculator-Dissertation-/)
+- [Launch browser demo](https://priceylewis.github.io/Academic-Performance-Calculator/)
 - No Java installation or sign-in is required in browser mode.
 - Sample academic data loads automatically and the dashboard opens directly.
 - Add/delete/clear/undo, charts and Random Forest prediction remain interactive.
