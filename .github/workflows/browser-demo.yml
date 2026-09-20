@@ -76,29 +76,31 @@ jobs:
             });
 
             await page.waitForFunction(
-              () => window.__academicDemoReady || window.__academicDemoError,
+              () => window.__academicDemoJavaReady || window.__academicDemoError,
               null,
-              { timeout: 120000 }
+              { timeout: 180000 }
             );
 
             if (await page.evaluate(() => window.__academicDemoError || '')) {
               throw new Error(await page.evaluate(() => window.__academicDemoError));
             }
 
+            await page.waitForTimeout(2000);
+
             const state = await page.evaluate(() => ({
               started: Boolean(window.__academicDemoLaunchStarted),
-              ready: Boolean(window.__academicDemoReady),
+              javaReady: Boolean(window.__academicDemoJavaReady),
+              stage: window.__academicDemoStage || '',
               displayCreated: Boolean(window.__academicDemoDisplayCreated),
               displayPresent: Boolean(document.getElementById('cheerpj-display')),
               containerChildren: document.querySelector('#container')?.children.length || 0,
               status: document.getElementById('status')?.textContent || '',
             }));
 
-            await page.waitForTimeout(12000);
             await page.screenshot({ path: 'browser-demo.png', fullPage: true });
 
-            if (!state.started || !state.ready || !state.displayCreated || !state.displayPresent || state.containerChildren < 1) {
-              throw new Error('CheerpJ launcher did not create a usable Swing display: ' + JSON.stringify(state));
+            if (!state.started || !state.javaReady || state.stage !== 'login' || !state.displayCreated || !state.displayPresent || state.containerChildren < 1) {
+              throw new Error('Java Swing login did not become ready in CheerpJ: ' + JSON.stringify(state));
             }
             console.log('Browser demo smoke state:', state);
             await browser.close();
