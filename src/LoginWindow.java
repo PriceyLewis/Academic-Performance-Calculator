@@ -194,6 +194,10 @@ public class LoginWindow {
     }
 
     public static void main(String[] args) {
+        if (Boolean.getBoolean("portfolio.browser")) {
+            SwingUtilities.invokeLater(MainWindow::new);
+            return;
+        }
         SwingUtilities.invokeLater(LoginWindow::new);
     }
 }
