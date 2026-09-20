@@ -28,17 +28,19 @@ This repository shows an end-to-end Java application rather than an isolated alg
 The browser build runs the actual Java Swing application through CheerpJ and is automatically built, tested in Chromium and published through GitHub Pages.
 
 - [Launch browser demo](https://priceylewis.github.io/Academic-Performance-Calculator-Dissertation-/)
-- No Java installation is required.
-- Sample academic data loads automatically in browser mode.
+- No Java installation or sign-in is required in browser mode.
+- Sample academic data loads automatically and the dashboard opens directly.
 - Add/delete/clear/undo, charts and Random Forest prediction remain interactive.
 - Microsoft Access load/save remains available in the desktop build rather than the browser sandbox.
 
-## Demo login
+## Desktop demo login
+
+The native desktop build retains the original local demo login:
 
 - **Username:** `student`
 - **Password:** `password123`
 
-These credentials are intentionally local and demo-only.
+The browser demo deliberately skips this extra step and opens the sample dashboard immediately.
 
 ## Quick start
 
@@ -71,13 +73,15 @@ The bundled `Database/StudentDB.accdb` provides the local demo database. No exte
 
 ## Suggested recruiter walkthrough
 
-1. Sign in using the demo credentials.
-2. Review the pre-populated modules and weighted grade.
-3. Switch between bar and pie visualisations.
-4. Add or remove a module and observe live recalculation.
-5. Demonstrate clear + undo and CSV import/export.
-6. Save/reload data through the Access database.
-7. Open **Predict Outcome** and show the forest classification plus ensemble vote share.
+### Browser
+1. Launch the demo and review the pre-populated modules and weighted grade immediately.
+2. Switch between bar and pie visualisations.
+3. Add or remove a module and observe live recalculation.
+4. Demonstrate clear + undo and CSV export.
+5. Open **Predict Outcome** and show the forest classification plus ensemble vote share.
+
+### Desktop
+The desktop build additionally demonstrates CSV import and Microsoft Access save/reload workflows.
 
 ## Random-forest implementation
 
@@ -136,7 +140,7 @@ Dependency binaries are intentionally **not** committed. Maven resolves the main
 mvn verify
 ```
 
-The CI pipeline compiles the application, runs JUnit tests and produces a runnable `academic-performance-calculator.jar` artifact on successful pushes.
+The CI pipeline compiles the application, runs JUnit tests and produces a runnable `academic-performance-calculator.jar` artifact on successful pushes. A separate browser workflow builds a thin Swing JAR, launches it in Chromium through CheerpJ, requires a Java-level dashboard-ready signal, captures a visual check and publishes the verified build to GitHub Pages.
 
 Current automated coverage verifies that the forest contains the expected ensemble size, classifies representative grade bands and reports a valid majority-vote confidence.
 
