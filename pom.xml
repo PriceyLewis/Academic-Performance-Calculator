@@ -20,6 +20,14 @@
     <sourceDirectory>src</sourceDirectory>
     <testSourceDirectory>tests</testSourceDirectory>
     <finalName>academic-performance-calculator</finalName>
+    <resources>
+      <resource>
+        <directory>src</directory>
+        <includes>
+          <include>Icons/**</include>
+        </includes>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
