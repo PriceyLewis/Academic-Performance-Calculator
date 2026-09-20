@@ -2,11 +2,13 @@
 
 [![Java CI](https://github.com/PriceyLewis/Academic-Performance-Calculator-Dissertation-/actions/workflows/compile.yml/badge.svg)](https://github.com/PriceyLewis/Academic-Performance-Calculator-Dissertation-/actions/workflows/compile.yml)
 
+[Launch the browser demo](https://priceylewis.github.io/Academic-Performance-Calculator-Dissertation-/) · [View the recruiter case study](https://priceylewis.github.io/projects/dissertation.html)
+
 A Java Swing desktop application developed from my final-year Computer Science dissertation and upgraded into a recruiter-friendly engineering demo. It combines module management, weighted performance tracking, visualisation, Microsoft Access persistence, CSV workflows and a dependency-free **random-forest classifier**.
 
 ![Academic Performance Calculator portfolio preview](https://priceylewis.github.io/assets/dissertation.svg)
 
-> The image above is a representative portfolio preview. The application itself runs locally as a Java Swing desktop app.
+> Recruiters can launch the Java Swing application directly in the browser with no Java installation. The desktop build retains Microsoft Access persistence; the browser portfolio mode uses disposable sample data.
 
 ## Why this project is useful in my portfolio
 
@@ -20,6 +22,16 @@ This repository shows an end-to-end Java application rather than an isolated alg
 - deterministic automated tests;
 - Maven dependency management and a runnable shaded JAR;
 - GitHub Actions verification on every push and pull request.
+
+## One-click browser demo
+
+The browser build runs the actual Java Swing application through CheerpJ and is automatically built, tested in Chromium and published through GitHub Pages.
+
+- [Launch browser demo](https://priceylewis.github.io/Academic-Performance-Calculator-Dissertation-/)
+- No Java installation is required.
+- Sample academic data loads automatically in browser mode.
+- Add/delete/clear/undo, charts and Random Forest prediction remain interactive.
+- Microsoft Access load/save remains available in the desktop build rather than the browser sandbox.
 
 ## Demo login
 
