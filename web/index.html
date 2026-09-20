@@ -110,8 +110,9 @@
       });
 
       status.textContent = "Launching Swing application…";
-      cheerpjCreateDisplay(-1, -1, container);
-
+      const display = cheerpjCreateDisplay(-1, -1, container);
+      display.id = "cheerpj-display";
+      window.__academicDemoDisplayCreated = true;
       window.__academicDemoLaunchStarted = true;
       const runPromise = cheerpjRunJar(jarPathForCurrentSite());
       window.__academicDemoRunPromise = runPromise;
