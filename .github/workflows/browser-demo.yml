@@ -120,8 +120,39 @@ jobs:
               throw error;
             } finally {
               await page.screenshot({ path: 'browser-demo.png', fullPage: true });
-              await browser.close();
+              await page.close();
             }
+
+            const mobile = await browser.newPage({ viewport: { width: 390, height: 844 } });
+            const mobileErrors = [];
+            mobile.on('pageerror', error => mobileErrors.push(error.message));
+            await mobile.goto('http://127.0.0.1:4173/', {
+              waitUntil: 'domcontentloaded',
+              timeout: 120000,
+            });
+            await mobile.waitForFunction(
+              () => window.__academicDemoJavaReady || window.__academicDemoError,
+              null,
+              { timeout: 180000 }
+            );
+            const mobileState = await mobile.evaluate(() => ({
+              error: window.__academicDemoError || '',
+              ready: Boolean(window.__academicDemoJavaReady),
+              stage: window.__academicDemoStage || '',
+              viewport: innerWidth,
+              documentWidth: document.documentElement.scrollWidth,
+              containerWidth: document.getElementById('container')?.getBoundingClientRect().width || 0,
+            }));
+            if (mobileState.error || !mobileState.ready || mobileState.stage !== 'dashboard') {
+              throw new Error('Academic mobile Swing demo failed: ' + JSON.stringify(mobileState));
+            }
+            if (mobileErrors.length || mobileState.documentWidth > mobileState.viewport + 2 || mobileState.containerWidth > mobileState.viewport + 2) {
+              throw new Error('Academic mobile visual shell failed: ' + JSON.stringify({ mobileState, mobileErrors }));
+            }
+            await mobile.waitForTimeout(2500);
+            await mobile.screenshot({ path: 'browser-demo-mobile.png', fullPage: true });
+            await mobile.close();
+            await browser.close();
           })().catch(error => {
             console.error(error);
             process.exit(1);
@@ -133,7 +164,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: academic-performance-browser-demo
-          path: browser-demo.png
+          path: |
+            browser-demo.png
+            browser-demo-mobile.png
           if-no-files-found: warn
           retention-days: 7
 
