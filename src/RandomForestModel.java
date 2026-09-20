@@ -119,8 +119,9 @@ public class RandomForestModel {
             for (int i = 0; i < FEATURE_COUNT; i++) {
                 finite &= Double.isFinite(row[i]);
             }
-            int label = (int) Math.round(row[FEATURE_COUNT]);
-            if (finite && label >= 0 && label < CLASS_COUNT) {
+            double rawLabel = row[FEATURE_COUNT];
+            int label = (int) Math.round(rawLabel);
+            if (finite && Double.isFinite(rawLabel) && label >= 0 && label < CLASS_COUNT) {
                 cleaned.add(Arrays.copyOf(row, FEATURE_COUNT + 1));
             }
         }
