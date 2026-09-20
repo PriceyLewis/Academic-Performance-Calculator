@@ -42,10 +42,11 @@ public class LoginWindow {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignored) {
         }
+        UiTheme.installDefaults();
 
         frame = new JFrame("Academic Performance Calculator Login");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(460, 340);
+        frame.setSize(500, 410);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
@@ -53,22 +54,34 @@ public class LoginWindow {
 
         JPanel content = new JPanel();
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
-        content.setBorder(BorderFactory.createEmptyBorder(20, 24, 20, 24));
+        content.setBackground(UiTheme.BACKGROUND);
+        content.setBorder(BorderFactory.createEmptyBorder(28, 36, 28, 36));
+
+        JLabel icon = new JLabel(new ImageIcon(loadWindowIcon().getScaledInstance(56, 56, Image.SCALE_SMOOTH)));
+        icon.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel title = new JLabel("Academic Performance Calculator", SwingConstants.CENTER);
-        title.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        title.setFont(new Font("Segoe UI", Font.BOLD, 23));
+        title.setForeground(UiTheme.TEXT);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel subtitle = new JLabel("Portfolio demo for academic performance forecasting", SwingConstants.CENTER);
         subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        subtitle.setForeground(UiTheme.MUTED);
         subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         usernameField = new JTextField(DEMO_USERNAME);
         passwordField = new JPasswordField(DEMO_PASSWORD);
         passwordField.setEchoChar('*');
+        usernameField.setPreferredSize(new Dimension(0, 36));
+        passwordField.setPreferredSize(new Dimension(0, 36));
 
         JPanel form = new JPanel(new GridLayout(0, 1, 0, 8));
-        form.setBorder(BorderFactory.createEmptyBorder(20, 0, 12, 0));
+        form.setBackground(UiTheme.SURFACE);
+        form.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(UiTheme.BORDER),
+            BorderFactory.createEmptyBorder(16, 18, 16, 18)
+        ));
         form.add(new JLabel("Username"));
         form.add(usernameField);
         form.add(new JLabel("Password"));
@@ -81,11 +94,16 @@ public class LoginWindow {
         hint.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
         JPanel actions = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        actions.setBackground(UiTheme.BACKGROUND);
         JButton loginButton = new JButton("Login");
         JButton helpButton = new JButton("Demo Notes");
+        UiTheme.styleButton(loginButton, "primary");
+        UiTheme.styleButton(helpButton, "secondary");
         actions.add(loginButton);
         actions.add(helpButton);
 
+        content.add(icon);
+        content.add(Box.createRigidArea(new Dimension(0, 10)));
         content.add(title);
         content.add(Box.createRigidArea(new Dimension(0, 6)));
         content.add(subtitle);
