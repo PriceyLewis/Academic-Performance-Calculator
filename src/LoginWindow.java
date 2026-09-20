@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -179,6 +180,11 @@ public class LoginWindow {
     }
 
     private Image loadWindowIcon() {
+        URL resource = LoginWindow.class.getResource("/Icons/App Icon.png");
+        if (resource != null) {
+            return new ImageIcon(resource).getImage();
+        }
+
         Path iconPath = DBConnector.resolveProjectPath("src", "Icons", "App Icon.png");
         if (!Files.exists(iconPath)) {
             return null;
