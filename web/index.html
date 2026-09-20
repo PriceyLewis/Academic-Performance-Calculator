@@ -101,12 +101,23 @@
       return "/app" + directory + "academic-performance-calculator.jar";
     }
 
+    async function Java_BrowserBridge_notifyReady(lib, stage) {
+      window.__academicDemoJavaReady = true;
+      window.__academicDemoStage = String(stage || "ready");
+      loading.classList.add("hidden");
+      setTimeout(() => loading.remove(), 400);
+      status.textContent = "Browser demo running";
+    }
+
     try {
       await cheerpjInit({
         version: 17,
         status: "splash",
         clipboardMode: "system",
         javaProperties: ["portfolio.browser=true"],
+        natives: {
+          Java_BrowserBridge_notifyReady,
+        },
       });
 
       status.textContent = "Launching Swing application…";
@@ -117,13 +128,14 @@
       const runPromise = cheerpjRunJar(jarPathForCurrentSite());
       window.__academicDemoRunPromise = runPromise;
 
-      setTimeout(() => {
-        loading.classList.add("hidden");
-        setTimeout(() => loading.remove(), 400);
-        status.textContent = "Browser demo running";
-        window.__academicDemoReady = true;
-      }, 6500);
+      const readinessTimeout = setTimeout(() => {
+        if (!window.__academicDemoJavaReady && !window.__academicDemoError) {
+          error.textContent = "The Java application is taking longer than expected to start. You can refresh the page or use the source-code link above.";
+          status.textContent = "Still starting…";
+        }
+      }, 90000);
 
+      runPromise.finally(() => clearTimeout(readinessTimeout));
       runPromise.catch((launchError) => {
         console.error("Academic Performance Calculator failed to launch", launchError);
         loading.classList.remove("hidden");
