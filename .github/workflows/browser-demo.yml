@@ -88,16 +88,18 @@ jobs:
             const state = await page.evaluate(() => ({
               started: Boolean(window.__academicDemoLaunchStarted),
               ready: Boolean(window.__academicDemoReady),
-              canvasCount: document.querySelectorAll('#container canvas').length,
+              displayCreated: Boolean(window.__academicDemoDisplayCreated),
+              displayPresent: Boolean(document.getElementById('cheerpj-display')),
+              containerChildren: document.querySelector('#container')?.children.length || 0,
               status: document.getElementById('status')?.textContent || '',
             }));
 
-            if (!state.started || !state.ready || state.canvasCount < 1) {
+            await page.waitForTimeout(12000);
+            await page.screenshot({ path: 'browser-demo.png', fullPage: true });
+
+            if (!state.started || !state.ready || !state.displayCreated || !state.displayPresent || state.containerChildren < 1) {
               throw new Error('CheerpJ launcher did not create a usable Swing display: ' + JSON.stringify(state));
             }
-
-            await page.waitForTimeout(8000);
-            await page.screenshot({ path: 'browser-demo.png', fullPage: true });
             console.log('Browser demo smoke state:', state);
             await browser.close();
           })().catch(error => {
