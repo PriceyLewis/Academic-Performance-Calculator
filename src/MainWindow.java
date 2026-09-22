@@ -114,6 +114,15 @@ public class MainWindow {
             }
         };
         table = new JTable(model);
+        // Give module names room instead of distributing all seven columns equally.
+        // Compact screens can scroll within the table to read every field.
+        int[] columnWidths = {220, 60, 60, 50, 90, 95, 75};
+        for (int index = 0; index < columnWidths.length; index++) {
+            table.getColumnModel().getColumn(index).setPreferredWidth(columnWidths[index]);
+        }
+        if (COMPACT_BROWSER) {
+            table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        }
         table.setRowSorter(new TableRowSorter<>(model));
         table.setFillsViewportHeight(true);
         UiTheme.styleTable(table, false);
